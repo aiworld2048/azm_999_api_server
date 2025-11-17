@@ -84,7 +84,7 @@
 
                  <li class="nav-item">
                     <a class="nav-link" data-toggle="dropdown" href="#">
-                        | Balance: {{ number_format(auth()->user()->wallet->balance, 2) }}
+                        | Balance: {{ number_format(auth()->user()->balance, 2) }}
                     </a>
                 </li> 
 
