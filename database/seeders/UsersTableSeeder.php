@@ -20,7 +20,7 @@ class UsersTableSeeder extends Seeder
         $owner = $this->createUser(
             UserType::Owner,
             'Owner',
-            'ShankomeeProvider',
+            'AZM999',
             '09123456789',
             null,
             'OWNER'.Str::random(6)
@@ -41,10 +41,10 @@ class UsersTableSeeder extends Seeder
         $agentK = $this->createUser(
             UserType::Agent,
             'Agent K',
-            'AGENT1000',
+            'AZMAG',
             '0911234561',
             $owner->id,
-            'SHANKOMEE'
+            'AZM999AG'
         );
         $walletService->transfer($owner, $agentK, 2_000_000, TransactionName::CreditTransfer);
 
@@ -53,10 +53,10 @@ class UsersTableSeeder extends Seeder
             $agent = $this->createUser(
                 UserType::Agent,
                 "Agent $i",
-                'AGENT'.str_pad($i, 3, '0', STR_PAD_LEFT),
+                'AZMAG'.str_pad($i, 3, '0', STR_PAD_LEFT),
                 '091123456'.str_pad($i, 2, '0', STR_PAD_LEFT),
                 $owner->id,
-                'AGENT'.Str::random(6)
+                'AZMAG'.Str::random(6)
             );
             // Random initial balance between 1.5M to 2.5M
             $initialBalance = rand(15, 25) * 100_000;
@@ -67,7 +67,7 @@ class UsersTableSeeder extends Seeder
                 $player = $this->createUser(
                     UserType::Player,
                     "Player $i-$k",
-                    'PLAYER'.str_pad($i, 2, '0', STR_PAD_LEFT).str_pad($k, 2, '0', STR_PAD_LEFT),
+                    'AZMP'.str_pad($i, 2, '0', STR_PAD_LEFT).str_pad($k, 2, '0', STR_PAD_LEFT),
                     '091111111'.str_pad($i, 1, '0', STR_PAD_LEFT).str_pad($k, 2, '0', STR_PAD_LEFT),
                     $agent->id,
                     'PLAYER'.Str::random(6)
@@ -120,17 +120,20 @@ class UsersTableSeeder extends Seeder
         string $name,
         string $user_name,
         string $phone,
-        ?int $parent_id = null
+        ?int $parent_id = null,
+        ?string $referral_code = null
     ): User {
         return User::create([
             'name' => $name,
             'user_name' => $user_name,
             'phone' => $phone,
-            'password' => Hash::make('shankomee'),
+            'password' => Hash::make('azm999vip'),
             'agent_id' => $parent_id,
             'status' => 1,
             'is_changed_password' => 1,
             'type' => $type->value,
+            'referral_code' => $referral_code,
+
         ]);
     }
 }

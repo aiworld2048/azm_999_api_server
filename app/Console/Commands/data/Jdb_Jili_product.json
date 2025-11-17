@@ -1,0 +1,32 @@
+{
+  "ProviderGames": 
+ [
+
+    {
+        "provider": "JDB",
+        "currency": "MMK",
+        "status": "ACTIVATED",
+        "provider_id": 41,
+        "product_id": 1195,
+        "product_code": 1085,
+        "product_name": "jdb",
+        "game_type": "FISHING",
+        "product_title": "JDB"
+    },
+    
+    
+    {
+        "provider": "Jili",
+        "currency": "MMK",
+        "status": "ACTIVATED",
+        "provider_id": 48,
+        "product_id": 1165,
+        "product_code": 1091,
+        "product_name": "jili_tcg",
+        "game_type": "FISHING",
+        "product_title": "JiLi"
+    }
+    
+    
+]
+}

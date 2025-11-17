@@ -16,9 +16,12 @@ return new class extends Migration
             $table->string('provider');
             $table->string('currency');
             $table->string('status');
-            $table->unsignedBigInteger('game_type_id');
+            $table->unsignedBigInteger('provider_id');
+            $table->unsignedBigInteger('provider_product_id');
             $table->string('product_code');
             $table->string('product_name');
+            $table->string('game_type');
+            $table->string('product_title');
             $table->string('short_name')->nullable();
             $table->integer('order')->default(0);
             $table->boolean('game_list_status')->default(1);
