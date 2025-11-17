@@ -1,0 +1,22 @@
+sudo apt install postgresql postgresql-contrib -y
+sudo systemctl status postgresql
+CREATE DATABASE shah_api_provider;
+CREATE USER provider_user WITH PASSWORD 'providershan';
+GRANT ALL PRIVILEGES ON DATABASE shah_api_provider TO provider_user;
+ALTER USER provider_user WITH PASSWORD 'providershan';
+
+sudo -i -u postgres
+psql -d shah_api_provider
+
+psql -h 127.0.0.1 -U provider_user -d shah_api_provider
+
+GRANT ALL ON SCHEMA public TO provider_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO provider_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO provider_user;
+
+sudo -i -u postgres
+psql -d ponewine_db
+
+pm2 start yarn --name "w2b1_next_slot" -- start
+pm2 startup
+pm2 save
