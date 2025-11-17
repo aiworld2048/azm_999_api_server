@@ -2,30 +2,33 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Enums\UserType;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\ChangePasswordRequest;
-use App\Http\Requests\Api\LoginRequest;
-use App\Http\Requests\Api\ProfileRequest;
-use App\Http\Requests\Api\RegisterRequest;
-use App\Http\Resources\AgentResource;
-use App\Http\Resources\PlayerResource;
-use App\Http\Resources\RegisterResource;
-use App\Http\Resources\UserResource;
-use App\Models\Admin\UserLog;
-use App\Models\Contact;
 use App\Models\User;
-use App\Traits\HttpResponses;
+use App\Enums\UserType;
+use App\Models\Contact;
+use App\Models\TransferLog;
 use Illuminate\Http\Request;
+use App\Models\Admin\UserLog;
+use App\Traits\HttpResponses;
+use App\Enums\TransactionName;
+use App\Services\WalletService;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+use App\Http\Resources\AgentResource;
+use App\Http\Resources\PlayerResource;
+use App\Http\Requests\Api\LoginRequest;
+use App\Http\Resources\RegisterResource;
+use App\Http\Requests\Api\ProfileRequest;
+use App\Http\Requests\Api\RegisterRequest;
+use App\Http\Requests\Api\ChangePasswordRequest;
 
 class AuthController extends Controller
 {
     use HttpResponses;
 
-    private const PLAYER_ROLE = 4;
+    private const PLAYER_ROLE = 3;
 
     public function login(LoginRequest $request)
     {
@@ -68,7 +71,7 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $agent = User::where('referral_code', $request->referral_code)->first();
+        $agent = User::where('referral_code', 'ponewine22x')->first();
 
         if (! $agent) {
             return $this->error('', 'Not Found Agent', 401);
@@ -78,7 +81,7 @@ class AuthController extends Controller
 
         $user = User::create([
             'phone' => $request->phone,
-            'name' => $request->name,
+            'name' => 'Register User',
             'user_name' => $this->generateRandomString(),
             'password' => Hash::make($inputs['password']),
             'payment_type_id' => $request->payment_type_id,
@@ -89,6 +92,8 @@ class AuthController extends Controller
         ]);
 
         $user->roles()->sync(self::PLAYER_ROLE);
+
+        // $this->cashIn($agent,$user);
 
         return $this->success(new RegisterResource($user), 'User register successfully.');
     }
@@ -173,5 +178,30 @@ class AuthController extends Controller
     private function isExistingUserForAgent($phone, $agent_id)
     {
         return User::where('phone', $phone)->where('agent_id', $agent_id)->first();
+    }
+
+
+    private function cashIn($agent,$user) {
+
+            app(WalletService::class)->transfer($agent, $user,1000,
+                TransactionName::CreditTransfer, [
+                    'note' => "1000 MMK register promotion",
+                    'old_balance' => $user->balanceFloat,
+                    'new_balance' => $user->balanceFloat + 1000,
+                ]);
+            // Log the transfer
+            TransferLog::create([
+                'from_user_id' => $agent->id,
+                'to_user_id' => $user->id,
+                'amount' => 1000,
+                'type' => 'top_up',
+                'description' => 'Credit transfer from '.$agent->user_name.' to player',
+                'meta' => [
+                    'transaction_type' => TransactionName::Deposit->value,
+                    'note' => "1000 MMK register promotion",
+                    'old_balance' => $user->balanceFloat,
+                    'new_balance' => $user->balanceFloat + 1000,
+                ],
+            ]);
     }
 }

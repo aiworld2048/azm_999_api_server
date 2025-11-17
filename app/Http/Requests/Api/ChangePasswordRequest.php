@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AgentRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,8 @@ class AgentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_name' => ['required', 'string', 'unique:users,user_name'],
-            'name' => ['required', 'string'],
-            'phone' => ['required', 'regex:/^[0-9]+$/', 'unique:users,phone'],
-            'password' => 'required|min:6',
-            'amount' => 'nullable|numeric',
-            'referral_code' => ['required', 'unique:users,referral_code'],
+            'current_password' => ['required'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ];
     }
 }

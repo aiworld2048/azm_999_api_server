@@ -76,13 +76,17 @@
                     <a class="nav-link"
                         href="{{ route('admin.changePassword', \Illuminate\Support\Facades\Auth::id()) }}">
                         {{ auth()->user()->name }}
-                        @if (auth()->user()->balance)
-                            | {{ auth()->user()->balance }}
+                        @if (auth()->user()->referral_code)
+                            | {{ auth()->user()->referral_code }}
                         @endif
                     </a>
                 </li>
 
-               
+                 <li class="nav-item">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        | Balance: {{ number_format(auth()->user()->wallet->balance, 2) }}
+                    </a>
+                </li> 
 
                 <li class="nav-item dropdown">
                     <a class="nav-link" href="#"
@@ -127,7 +131,7 @@
                             </a>
                         </li>
 
-                        @can('owner_access')
+                        @can('agent_view')
                             <li class="nav-item">
                                 <a href="{{ route('admin.agent.index') }}"
                                     class="nav-link {{ Route::currentRouteName() == 'admin.agent.index' ? 'active' : '' }}">
@@ -138,6 +142,147 @@
                                 </a>
                             </li>
                         @endcan
+
+                        @can('player_view')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.player.index') }}"
+                                    class="nav-link {{ Route::currentRouteName() == 'admin.player.index' ? 'active' : '' }}">
+                                    <i class="far fa-user"></i>
+                                    <p>
+                                        Player List
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+
+                        @can('bank_view')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.bank.index') }}"
+                                    class="nav-link {{ Route::currentRouteName() == 'admin.bank.index' ? 'active' : '' }}">
+                                    <i class="fas fa-university"></i>
+                                    <p>
+                                        Bank
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+
+                        @php
+                            $user = auth()->user();
+                            $isAgent = $user && ($user->type == \App\Enums\UserType::Agent->value || $user->roles->pluck('title')->contains('Agent'));
+                        @endphp
+                        
+                        @if($isAgent)
+                            <li class="nav-item">
+                                <a href="{{ route('admin.agent.withdraw') }}"
+                                    class="nav-link {{ Route::currentRouteName() == 'admin.agent.withdraw' ? 'active' : '' }}">
+                                    <i class="fas fa-comment-dollar"></i>
+                                    <p>
+                                        Withdraw Request
+                                    </p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{{ route('admin.agent.deposit') }}"
+                                    class="nav-link {{ Route::currentRouteName() == 'admin.agent.deposit' ? 'active' : '' }}">
+                                    <i class="fab fa-dochub"></i>
+                                    <p>
+                                        Deposit Request
+                                    </p>
+                                </a>
+                            </li>
+                        @endif
+
+                        @can('agent_wallet_deposit')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.transfer-logs.index') }}"
+                                    class="nav-link {{ Route::currentRouteName() == 'admin.transfer-logs.index' ? 'active' : '' }}">
+                                    <i class="fas fa-exchange-alt"></i>
+                                    <p>
+                                        Transaction Log
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+
+                        @canany(['report_accept','player_view'])
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-file-invoice"></i>
+                                    <p>
+                                        Reports
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.buffalo-report.index') }}"
+                                            class="nav-link {{ in_array(Route::currentRouteName(), ['admin.buffalo-report.index', 'admin.buffalo-report.show']) ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Buffalo Game Report</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endcanany
+
+                        @canany(['banner_view','banner_text_view','promotion_view'])
+                            <li class="nav-item {{ in_array(Route::currentRouteName(), ['admin.video-upload.index', 'admin.text.index', 'admin.banners.index', 'admin.adsbanners.index', 'admin.promotions.index']) ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-tools"></i>
+                                    <p>
+                                        General Settings
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    @can('banner_view')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.video-upload.index') }}"
+                                                class="nav-link {{ Route::currentRouteName() == 'admin.video-upload.index' ? 'active' : '' }}">
+                                                <i class="fas fa-video nav-icon"></i>
+                                                <p>AdsVideo</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.banners.index') }}"
+                                                class="nav-link {{ Route::currentRouteName() == 'admin.banners.index' ? 'active' : '' }}">
+                                                <i class="fas fa-image nav-icon"></i>
+                                                <p>Banner</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.adsbanners.index') }}"
+                                                class="nav-link {{ Route::currentRouteName() == 'admin.adsbanners.index' ? 'active' : '' }}">
+                                                <i class="fas fa-ad nav-icon"></i>
+                                                <p>Banner Ads</p>
+                                            </a>
+                                        </li>
+                                    @endcan
+
+                                    @can('banner_text_view')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.text.index') }}"
+                                                class="nav-link {{ Route::currentRouteName() == 'admin.text.index' ? 'active' : '' }}">
+                                                <i class="fas fa-font nav-icon"></i>
+                                                <p>BannerText</p>
+                                            </a>
+                                        </li>
+                                    @endcan
+
+                                    @can('promotion_view')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.promotions.index') }}"
+                                                class="nav-link {{ Route::currentRouteName() == 'admin.promotions.index' ? 'active' : '' }}">
+                                                <i class="fas fa-bullhorn nav-icon"></i>
+                                                <p>Promotions</p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                </ul>
+                            </li>
+                        @endcanany
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

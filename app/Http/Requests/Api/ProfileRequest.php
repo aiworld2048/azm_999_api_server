@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class AgentRequest extends FormRequest
+class ProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +24,10 @@ class AgentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_name' => ['required', 'string', 'unique:users,user_name'],
-            'name' => ['required', 'string'],
-            'phone' => ['required', 'regex:/^[0-9]+$/', 'unique:users,phone'],
-            'password' => 'required|min:6',
-            'amount' => 'nullable|numeric',
-            'referral_code' => ['required', 'unique:users,referral_code'],
+            'name' => 'required|min:3|string',
+            'phone' => [
+                'required', 'regex:/^([0-9\s\-\+\(\)]*)$/', Rule::unique('users')->ignore(Auth::id()),
+            ],
         ];
     }
 }
