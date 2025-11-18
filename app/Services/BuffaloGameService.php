@@ -10,9 +10,9 @@ class BuffaloGameService
     /**
      * Site configuration for TriBet
      */
-    private const SITE_NAME = 'maxwinmyanmar';
-    private const SITE_PREFIX = 'mwy';
-    private const SITE_URL = 'https://maxwinmyanmar.pro';
+    private const SITE_NAME = 'https://master.azm999.com';
+    private const SITE_PREFIX = 'az9'; // az9
+    private const SITE_URL = 'https://master.azm999.com';
 
     /**
      * Generate UID (32 characters) for Buffalo API
@@ -195,7 +195,17 @@ class BuffaloGameService
      * Generate Buffalo authentication data
      * Returns UID and Token for frontend
      */
-    
+    // public static function generateBuffaloAuth(User $user): array
+    // {
+    //     $uid = self::generateUid($user->user_name);
+    //     $token = self::generatePersistentToken($user->user_name);
+
+    //     return [
+    //         'uid' => $uid,
+    //         'token' => $token,
+    //         'user_name' => $user->user_name,
+    //     ];
+    // }
 
     public static function generateBuffaloAuth(User $user): array
     {
@@ -212,7 +222,22 @@ class BuffaloGameService
     /**
      * Generate Buffalo game URL with lobby URL
      */
-    
+    // public static function generateGameUrl(User $user, int $roomId, string $lobbyUrl): string
+    // {
+    //     $uid = self::generateUid($user->user_name);
+    //     $token = self::generatePersistentToken($user->user_name);
+
+    //     $data = [
+    //         "gameId" => 23, // Buffalo game ID
+    //         "roomId" => $roomId,
+    //         "uid" => $uid,
+    //         "token" => $token,
+    //         "lobbyUrl" => $lobbyUrl,
+    //     ];
+
+    //     $baseUrl = 'http://prime7.wlkfkskakdf.com/';
+    //     return $baseUrl . '?' . http_build_query($data);
+    // }
 
     public static function generateGameUrl(User $user, int $roomId = 1, string $lobbyUrl = ''): string
     {
@@ -221,8 +246,7 @@ class BuffaloGameService
         $gameId = 23; // Buffalo game ID from provider examples
         
         // Use provided lobby URL or default to production site
-        // $finalLobbyUrl = $lobbyUrl ?: 'https://m.6tribet.net';
-         $finalLobbyUrl = $lobbyUrl ?: 'https://tg-slot-sawgyi.vercel.app';
+        $finalLobbyUrl = $lobbyUrl ?: 'https://online.azm999.com';
         
         // Generate the base URL without auth (auth will be added by controller)
         $gameUrl = $baseUrl . '?gameId=' . $gameId . 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\Game;
 use App\Enums\TransactionName;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Services\WalletService;
+use App\Services\CustomWalletService;
 use App\Services\BuffaloGameService;
 use App\Models\LogBuffaloBet;
 use Illuminate\Http\Request;
@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\DB;
 
 class BuffaloGameController extends Controller
 {
-    protected WalletService $walletService;
+    protected CustomWalletService $walletService;
 
-    public function __construct(WalletService $walletService)
+    public function __construct(CustomWalletService $walletService)
     {
         $this->walletService = $walletService;
     }
@@ -92,7 +92,7 @@ class BuffaloGameController extends Controller
         }
 
         // Get balance (assuming you use bavix/laravel-wallet)
-        $balance = $user->balanceFloat;
+        $balance = $user->balance;
 
         Log::info('Azm999 Buffalo - Balance retrieved successfully', [
             'user' => $userName,
@@ -251,7 +251,7 @@ class BuffaloGameController extends Controller
                 'user_id' => $user->id,
                 'user_name' => $user->user_name,
                 'change_amount' => $changeAmount,
-                'new_balance' => $user->balanceFloat
+                'new_balance' => $user->balance
             ]);
 
             // Log the bet
@@ -297,8 +297,8 @@ class BuffaloGameController extends Controller
                 'payload' => $requestData,
                 'game_name' => 'Buffalo Game',
                 'status' => 'completed',
-                'before_balance' => $user->balanceFloat - ($requestData['changemoney'] ?? 0),
-                'balance' => $user->balanceFloat,
+                'before_balance' => $user->balance - ($requestData['changemoney'] ?? 0),
+                'balance' => $user->balance,
             ]);
 
             Log::info('Azm999 Buffalo - Bet logged successfully', [
@@ -339,7 +339,7 @@ class BuffaloGameController extends Controller
                 'auth' => $auth,
                 'available_rooms' => $availableRooms,
                 'all_rooms' => $roomConfig,
-                'user_balance' => $user->balanceFloat,
+                'user_balance' => $user->balance,
             ],
         ]);
     }
@@ -451,7 +451,7 @@ class BuffaloGameController extends Controller
                     'Url' => $gameUrl, // Compatible with existing frontend
                     'game_url' => $gameUrl, // HTTP URL (exact provider format)
                     'room_info' => $roomConfig,
-                    'user_balance' => $user->balanceFloat,
+                    'user_balance' => $user->balance,
                 ]);
             }
             
