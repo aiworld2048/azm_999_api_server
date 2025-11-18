@@ -14,335 +14,67 @@ class PermissionsTableSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+            // Agent management (Owner)
+            ['title' => 'agent_view', 'group' => 'agent'],
+            ['title' => 'agent_create', 'group' => 'agent'],
+            ['title' => 'agent_update', 'group' => 'agent'],
+            ['title' => 'agent_delete', 'group' => 'agent'],
 
-            [
-                'title' => 'owner_access',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            // Banner and banner text (Owner)
+            ['title' => 'banner_view', 'group' => 'banner'],
+            ['title' => 'banner_create', 'group' => 'banner'],
+            ['title' => 'banner_update', 'group' => 'banner'],
+            ['title' => 'banner_delete', 'group' => 'banner'],
 
-            [
-                'title' => 'agent_access',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'player_index',
-                'group' => 'player',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'player_create',
-                'group' => 'player',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'player_edit',
-                'group' => 'player',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'player_delete',
-                'group' => 'player',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'agent_index',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'agent_create',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'agent_edit',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'agent_delete',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'agent_change_password_access',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'transfer_log',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'make_transfer',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'bank',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'withdraw',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'deposit',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'contact',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'owner_index',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'owner_create',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'owner_edit',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'owner_delete',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            ['title' => 'banner_text_view', 'group' => 'banner_text'],
+            ['title' => 'banner_text_create', 'group' => 'banner_text'],
+            ['title' => 'banner_text_update', 'group' => 'banner_text'],
+            ['title' => 'banner_text_delete', 'group' => 'banner_text'],
 
-            [
-                'title' => 'system_wallet',
-                'group' => 'systemwallet',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'system_wallet_access',
-                'group' => 'systemwallet',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'report_check',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'game_type_access',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'provider_access',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'provider_create',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'provider_edit',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'provider_delete',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'provider_index',
-                'group' => 'owner',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'subagent_access',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'subagent_index',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'subagent_create',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'subagent_edit',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'subagent_delete',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'player_access',
-                'group' => 'agent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // subagent permission
-            [
-                'title' => 'subagent_player_create',
-                'group' => 'subagent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            // Promotions (Owner)
+            ['title' => 'promotion_view', 'group' => 'promotion'],
+            ['title' => 'promotion_create', 'group' => 'promotion'],
+            ['title' => 'promotion_update', 'group' => 'promotion'],
+            ['title' => 'promotion_delete', 'group' => 'promotion'],
 
-            [
-                'title' => 'subagent_deposit',
-                'group' => 'subagent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'subagent_withdraw',
-                'group' => 'subagent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            // Slot game settings (Owner)
+            ['title' => 'slot_setting_view', 'group' => 'slot'],
+            ['title' => 'slot_setting_update', 'group' => 'slot'],
 
-            [
-                'title' => 'player_view',
-                'group' => 'subagent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            // Owner wallet actions with agents
+            ['title' => 'agent_wallet_deposit', 'group' => 'agent_wallet'],
+            ['title' => 'agent_wallet_withdraw', 'group' => 'agent_wallet'],
 
-            [
-                'title' => 'subagent_access',
-                'group' => 'subagent',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // master permission
-            [
-                'title' => 'master_access',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'master_index',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'master_create',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'master_edit',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'master_delete',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'master_change_password_access',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'master_transfer_log',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'master_make_transfer',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'master_bank',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'master_withdraw',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'master_deposit',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'master_contact',
-                'group' => 'master',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            // Reports
+            ['title' => 'report_accept', 'group' => 'report'],
 
+            // Player management (Agent)
+            ['title' => 'player_view', 'group' => 'player'],
+            ['title' => 'player_create', 'group' => 'player'],
+            ['title' => 'player_update', 'group' => 'player'],
+            ['title' => 'player_delete', 'group' => 'player'],
+            ['title' => 'player_ban', 'group' => 'player'],
+            ['title' => 'player_password_change', 'group' => 'player'],
+
+            // Bank management (Agent)
+            ['title' => 'bank_view', 'group' => 'bank'],
+            ['title' => 'bank_create', 'group' => 'bank'],
+            ['title' => 'bank_update', 'group' => 'bank'],
+            ['title' => 'bank_delete', 'group' => 'bank'],
+
+            // Player self-service (Player)
+            ['title' => 'player_profile_view', 'group' => 'self'],
+            ['title' => 'player_profile_update', 'group' => 'self'],
+            ['title' => 'player_wallet_view', 'group' => 'self'],
         ];
 
-        Permission::insert($permissions);
+        $timestamped = collect($permissions)->map(function (array $permission) {
+            return array_merge($permission, [
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        })->toArray();
+
+        Permission::insert($timestamped);
     }
 }
