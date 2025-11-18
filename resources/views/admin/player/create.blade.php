@@ -69,7 +69,7 @@
                                 <div class="form-group">
                                     <label>Amount</label>
                                     <span
-                                        class="badge badge-sm bg-gradient-success">{{ auth()->user()->balanceFloat }}</span>
+                                        class="badge badge-sm bg-gradient-success">{{ auth()->user()->balance }}</span>
                                     <input type="text" class="form-control" name="amount" value="{{ old('amount') }}">
                                 </div>
 

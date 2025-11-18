@@ -60,7 +60,7 @@
                                                         <small
                                                             class="badge bg-gradient-{{ $user->status == 1 ? 'success' : 'danger' }}">{{ $user->status == 1 ? 'active' : 'inactive' }}</small>
                                                     </td>
-                                                    <td class="text-bold">{{ number_format($user->balanceFloat) }}</td>
+                                                    <td class="text-bold">{{ number_format($user->balance) }}</td>
                                                     
                                                     @canany(['player_update','player_delete','player_ban','player_password_change'])
                                                     <td>
