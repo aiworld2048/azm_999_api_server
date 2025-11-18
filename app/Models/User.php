@@ -12,6 +12,10 @@ use App\Models\Admin\Permission;
 use App\Models\Admin\Promotion;
 use App\Models\Admin\Role;
 use App\Models\PlaceBet;
+use App\Models\TransactionLog;
+use App\Models\WithdrawLog;
+use App\Models\CustomTransaction;
+use App\Models\Admin\ReportTransaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -101,7 +105,7 @@ class User extends Authenticatable
     // A user can have children (e.g., Admin has many Agents, or Agent has many Players)
     public function children()
     {
-        return $this->hasMany(User::class, 'agent_id', 'id');
+        return $this->hasMany(User::class, 'agent_id');
     }
 
     // A user belongs to an agent (parent)
@@ -116,7 +120,10 @@ class User extends Authenticatable
         return $this->hasMany(User::class, 'agent_id');
     }
 
-   
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'agent_id');
+    }
 
     // A user can have a parent (e.g., Agent belongs to an Admin)
     public function parent()
@@ -130,6 +137,31 @@ class User extends Authenticatable
         return $this->children()->whereHas('roles', function ($query) {
             $query->where('role_id', self::PLAYER_ROLE);
         });
+    }
+
+    public function banners()
+    {
+        return $this->hasMany(Banner::class, 'admin_id'); // Banners owned by this admin
+    }
+
+    public function bannertexts()
+    {
+        return $this->hasMany(BannerText::class, 'admin_id'); // Banners owned by this admin
+    }
+
+    public function bannerads()
+    {
+        return $this->hasMany(BannerAds::class, 'admin_id'); // Banners owned by this admin
+    }
+
+    public function promotions()
+    {
+        return $this->hasMany(Promotion::class, 'admin_id'); // Banners owned by this admin
+    }
+
+    public function toptenwithdraws()
+    {
+        return $this->hasMany(TopTenWithdraw::class, 'admin_id'); // Banners owned by this admin
     }
 
     /**
@@ -153,42 +185,138 @@ class User extends Authenticatable
         return $this->hasMany(User::class, 'agent_id');
     }
 
+    public function poneWinePlayer()
+    {
+        return $this->hasMany(PlaceBet::class, 'player_id', 'id');
+    }
+
     public static function adminUser()
     {
-        return self::where('type', UserType::Owner->value)->first();
+        return self::where('type', UserType::SystemWallet)->first();
+    }
+
+    /**
+     * Get the game provider password for this user.
+     */
+    public function getGameProviderPassword(): ?string
+    {
+        if ($this->game_provider_password) {
+            try {
+                return Crypt::decryptString($this->game_provider_password);
+            } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+                // Log the error or handle it as appropriate (e.g., return null to regenerate)
+                \Log::error('Failed to decrypt game_provider_password for user '.$this->id, ['error' => $e->getMessage()]);
+
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Set the game provider password for this user.
+     */
+    public function setGameProviderPassword(string $password): void
+    {
+        $this->game_provider_password = Crypt::encryptString($password);
+        $this->save(); // Save the user model to persist the password
+    }
+
+    public function placeBets()
+    {
+        return $this->hasMany(PlaceBet::class, 'member_account', 'user_name', 'player_id');
     }
 
     public function hasPermission($permission)
     {
-        // Owner has all permissions
-        if ($this->hasRole('Owner')) {
-            return true;
-        }
-
-        // Agent has all permissions
+        // If user is a parent agent, they have all permissions
         if ($this->hasRole('Agent')) {
             return true;
         }
 
-        // Player has specific permissions only
-        if ($this->hasRole('Player')) {
+        // For sub-agents, check their specific permissions
+        if ($this->hasRole('SubAgent')) {
             return $this->permissions()
                 ->where('title', $permission)
                 ->exists();
         }
 
-        // Default: deny permission
         return false;
+    }
+
+   
+
+    public function getAllDescendantPlayers()
+    {
+        // Fetch direct players
+        $players = $this->children()->where('type', \App\Enums\UserType::Player)->get();
+
+        // Fetch all subagents
+        $subagents = $this->children()->where('type', \App\Enums\UserType::SubAgent)->get();
+
+        // For each subagent, fetch their direct players recursively
+        foreach ($subagents as $sub) {
+            $players = $players->merge($sub->getAllDescendantPlayers());
+        }
+
+        return $players;
     }
 
     
 
-    public function buffaloPlayer()
+    // If 'agent_id' also refers to a User
+    public function placedBetsAsAgent()
     {
-        return $this->hasMany(PlaceBet::class, 'player_id', 'id');
+        return $this->hasMany(TwoBet::class, 'agent_id');
     }
-    public function poneWinePlayer()
+
+    
+
+    public function reportTransactionsAsPlayer()
     {
-        return $this->hasMany(PlaceBet::class, 'player_id', 'id');
+        return $this->hasMany(ReportTransaction::class, 'user_id');
+    }
+
+    // Custom Wallet Methods (replacing Laravel Wallet package)
+    
+    /**
+     * Get balance attribute as float
+     */
+    public function getBalanceAttribute($value): float
+    {
+        return (float) $value;
+    }
+
+    /**
+     * Get wallet balance as float (alias for balance)
+     */
+    public function getBalanceFloatAttribute(): float
+    {
+        return (float) $this->getAttributes()['balance'] ?? 0.0;
+    }
+
+    /**
+     * Check if user has sufficient balance
+     */
+    public function hasBalance(float $amount): bool
+    {
+        return $this->balance >= $amount;
+    }
+
+    /**
+     * Get custom transactions for this user
+     */
+    public function customTransactions()
+    {
+        return $this->hasMany(CustomTransaction::class, 'user_id');
+    }
+
+    /**
+     * Get custom transactions where this user is the target
+     */
+    public function customTransactionsAsTarget()
+    {
+        return $this->hasMany(CustomTransaction::class, 'target_user_id');
     }
 }
