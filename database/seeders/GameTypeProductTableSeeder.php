@@ -12,12 +12,9 @@ class GameTypeProductTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $gameTypeIdsByCode = DB::table('game_types')
-            ->pluck('id', 'code');
+        $gameTypeIdsByCode = DB::table('game_types')->pluck('id', 'code');
 
-        $products = DB::table('products')
-            ->select('id', 'game_type', 'product_name')
-            ->get();
+        $products = DB::table('products')->select('id', 'game_type', 'product_name')->get();
 
         $now = now();
 
@@ -32,7 +29,7 @@ class GameTypeProductTableSeeder extends Seeder
             $records[] = [
                 'product_id' => $product->id,
                 'game_type_id' => $gameTypeId,
-                'image' => $product->product_name.'.png',
+                'image' => $product->product_name . '.png',
                 'rate' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
