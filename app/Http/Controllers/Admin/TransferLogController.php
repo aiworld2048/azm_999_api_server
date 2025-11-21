@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Models\TransferLog;
 use App\Models\User;
@@ -71,36 +72,34 @@ class TransferLogController extends Controller
      */
     private function getDirectlyRelatedUserIds(User $user): array
     {
-        $relatedIds = [];
-        if ($user->hasRole('Owner')) {
+        $userType = UserType::tryFrom((int) $user->type);
+
+        if ($userType === UserType::Owner) {
             // Owner: direct agents
-            $relatedIds = $user->children()->whereHas('roles', function ($q) {
-                $q->where('title', 'Master');
-            })->pluck('id')->toArray();
-        } elseif ($user->hasRole('Master')) {
-            $relatedIds = $user->children()->whereHas('roles', function ($q) {
-                $q->where('title', 'Agent');
-            })->pluck('id')->toArray();
-        } elseif ($user->hasRole('Agent')) {
-            // Agent: direct players, direct subagents, parent owner
-            $playerIds = $user->children()->whereHas('roles', function ($q) {
-                $q->where('title', 'Player');
-            })->pluck('id')->toArray();
-            $subAgentIds = $user->children()->whereHas('roles', function ($q) {
-                $q->where('title', 'SubAgent');
-            })->pluck('id')->toArray();
-            $parentOwnerId = $user->agent_id ? [$user->agent_id] : [];
-            $relatedIds = array_merge($playerIds, $subAgentIds, $parentOwnerId);
-        } elseif ($user->hasRole('SubAgent')) {
-            // SubAgent: direct players, parent agent
-            $playerIds = $user->children()->whereHas('roles', function ($q) {
-                $q->where('title', 'Player');
-            })->pluck('id')->toArray();
-            $parentAgentId = $user->agent_id ? [$user->agent_id] : [];
-            $relatedIds = array_merge($playerIds, $parentAgentId);
+            return $user->children()
+                ->where('type', UserType::Agent->value)
+                ->pluck('id')
+                ->toArray();
         }
 
-        return array_unique($relatedIds);
+        if ($userType === UserType::Agent) {
+            // Agent: direct players + parent owner (for owner↔agent transfers)
+            $playerIds = $user->children()
+                ->where('type', UserType::Player->value)
+                ->pluck('id')
+                ->toArray();
+
+            $parentOwnerId = $user->agent_id ? [$user->agent_id] : [];
+
+            return array_unique(array_merge($playerIds, $parentOwnerId));
+        }
+
+        if ($userType === UserType::Player) {
+            // Player: parent agent
+            return $user->agent_id ? [$user->agent_id] : [];
+        }
+
+        return [];
     }
 
     public function PlayertransferLog($relatedUserId)

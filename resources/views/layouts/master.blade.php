@@ -173,6 +173,15 @@
                         @endphp
                         
                         @if($isAgent)
+                        <li class="nav-item">
+                                <a href="{{ route('admin.transfer-logs.index') }}"
+                                    class="nav-link {{ Route::currentRouteName() == 'admin.transfer-logs.index' ? 'active' : '' }}">
+                                    <i class="fas fa-exchange-alt"></i>
+                                    <p>
+                                        Transaction Log
+                                    </p>
+                                </a>
+                            </li>
                             <li class="nav-item">
                                 <a href="{{ route('admin.agent.withdraw') }}"
                                     class="nav-link {{ Route::currentRouteName() == 'admin.agent.withdraw' ? 'active' : '' }}">

@@ -58,7 +58,7 @@ class PlayerController extends Controller
         // Removed 'placeBets' eager load as aggregates are handled separately
         $players = User::with(['roles']) // Only eager load roles
             ->whereIn('id', $playerIds)
-            ->select('id', 'name', 'user_name', 'phone', 'status', 'referral_code') // Ensure 'balance' is selected if balanceFloat uses it
+            ->select('id', 'name', 'user_name', 'phone', 'status', 'referral_code', 'balance') // Ensure 'balance' is selected if balanceFloat uses it
             ->orderBy('created_at', 'desc')
             ->get();
 

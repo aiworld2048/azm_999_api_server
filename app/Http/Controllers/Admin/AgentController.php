@@ -15,6 +15,7 @@ use App\Services\CustomWalletService;
 use App\Models\TransferLog;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Models\PaymentType;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -59,7 +60,7 @@ class AgentController extends Controller
         $users = User::with(['roles', 'children.poneWinePlayer'])
             ->where('type', UserType::Agent->value)
             ->where('agent_id', $owner->id)
-            ->select('id', 'name', 'user_name', 'phone', 'status', 'balance', 'created_at')
+            ->select('id', 'name', 'user_name', 'phone', 'status', 'balance', 'referral_code', 'created_at')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -71,14 +72,11 @@ class AgentController extends Controller
      */
      public function create(): View
     {
-        // if (! Gate::allows('agent_create')) {
-        //     abort(403);
-        // }
+       $agent_name = $this->generateRandomString();
+        $paymentTypes = PaymentType::all();
+        $referral_code = $this->generateReferralCode();
 
-        $agent_name = $this->generateRandomString();
-        $shan_secret_key = $this->generateShanSecretKey();
-
-        return view('admin.agent.create', compact('agent_name', 'shan_secret_key'));
+        return view('admin.agent.create', compact('agent_name', 'paymentTypes', 'referral_code'));
     }
 
     // generate ShanSecretkey string 15
@@ -115,20 +113,12 @@ class AgentController extends Controller
                 'password' => Hash::make($inputs['password']),
                 'agent_id' => Auth::id(),
                 'type' => UserType::Agent->value,
-                'shan_agent_code' => $inputs['shan_agent_code'],
-                'shan_agent_name' => $inputs['shan_agent_name'],
-                'shan_secret_key' => $inputs['shan_secret_key'],
-                'shan_callback_url' => $inputs['shan_callback_url'],
+                'referral_code' => $this->generateReferralCode(),
             ]
         );
 
         $agent = User::create($userPrepare);
-        // $operator = Operator::create([
-        //     'code' => $inputs['shan_agent_code'],
-        //     'secret_key' => $inputs['shan_secret_key'],
-        //     'active' => 1,
-        //     'callback_url' => $inputs['shan_callback_url'],
-        // ]);
+       
 
         $agent->roles()->sync(self::AGENT_ROLE);
 
@@ -141,7 +131,7 @@ class AgentController extends Controller
                 DB::beginTransaction();
 
                 // Perform the transfer
-                app(CustomTransaction::class)->transfer(
+                app(CustomWalletService::class)->transfer(
                     $owner,
                     $agent,
                     $transfer_amount,
@@ -180,10 +170,7 @@ class AgentController extends Controller
             ->with('password', $request->password)
             ->with('username', $agent->user_name)
             ->with('amount', $transfer_amount)
-            ->with('shan_agent_code', $inputs['shan_agent_code'])
-            ->with('shan_agent_name', $inputs['shan_agent_name'])
-            ->with('shan_secret_key', $inputs['shan_secret_key'])
-            ->with('shan_callback_url', $inputs['shan_callback_url']);
+            ->with('referral_code', $this->generateReferralCode());
     }
 
     /**
@@ -234,12 +221,7 @@ class AgentController extends Controller
             'site_name' => 'nullable|string|max:255',
             'site_link' => 'nullable|url|max:255',
             
-            // Shan Game Configuration
-            'shan_agent_code' => 'required|string|max:255|unique:users,shan_agent_code,' . $id,
-            'shan_agent_name' => 'nullable|string|max:255',
-            'shan_secret_key' => 'required|string|max:255',
-            'shan_callback_url' => 'required|url|max:255',
-            
+           
             // Status Settings
             'status' => 'required|integer|in:0,1',
             'is_changed_password' => 'required|integer|in:0,1',
@@ -696,11 +678,11 @@ class AgentController extends Controller
         $owner = Auth::user();
         $this->ensureOwner($owner);
 
-        $subAgent = User::where('type', UserType::Agent->value)
+        $agent = User::where('type', UserType::Agent->value)
             ->where('agent_id', $owner->id)
             ->findOrFail($id);
 
-        return view('admin.agent.agent_profile', compact('subAgent'));
+        return view('admin.agent.agent_profile', compact('agent'));
     }
 
     private function ensureOwner(User $user): void

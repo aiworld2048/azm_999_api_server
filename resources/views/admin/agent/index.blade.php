@@ -20,16 +20,15 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    @can('agent_create')
-                        <div class="d-flex justify-content-end mb-3">
-                            <a href="{{ route('admin.agent.create') }}" class="btn btn-success" style="width: 120px;">
-                                <i class="fas fa-plus text-white mr-2"></i>Create
-                            </a>
-                        </div>
+                     @can('agent_create')
+                    <div class="d-flex justify-content-end mb-3">
+                        <a href="{{ route('admin.agent.create') }}" class="btn btn-success " style="width: 100px;"><i
+                                class="fas fa-plus text-white  mr-2"></i>Create</a>
+                    </div>
                     @endcan
                     <div class="card">
                         <div class="card-body">
-                            <table id="mytable" class="table table-bordered table-hover align-middle">
+                            <table id="mytable" class="table table-bordered table-hover">
                                 <thead class="text-center">
                                     <th>#</th>
                                     <th>AgentName</th>
@@ -38,12 +37,14 @@
                                     <th>Phone</th>
                                     <th>Status</th>
                                     <th>Balance</th>
-                                    @can('agent_edit')
-                                        <th>Action</th>
-                                    @endcan
-                                    @can('make_transfer')
-                                        <th>Transfer</th>
-                                    @endcan
+                                    <!-- <th>Total Winlose Amt</th> -->
+                                   @canany(['agent_update','agent_delete'])
+                                    <th>Action</th>
+                                   @endcanany
+                                   @canany(['agent_wallet_deposit','agent_wallet_withdraw'])
+                                    <th>Transfer</th>
+                                   @endcanany
+                                    <!-- <th>Transfer</th> -->
                                 </thead>
                                 <tbody >
 
@@ -65,8 +66,10 @@
                                                             class="badge bg-gradient-{{ $user->status == 1 ? 'success' : 'danger' }}">{{ $user->status == 1 ? 'active' : 'inactive' }}</small>
 
                                                     </td>
-                                                    <td>{{ number_format((float) $user->balance, 2) }}</td>
-                                            @can('agent_edit')
+                                                    <td>{{ number_format($user->balanceFloat) }}</td>
+
+                                                    
+                                            @canany(['agent_update','agent_delete'])
                                                     <td>
                                                         @if ($user->status == 1)
                                                             <a onclick="event.preventDefault(); document.getElementById('banUser-{{ $user->id }}').submit();"
@@ -101,15 +104,18 @@
                                                             <i class="fas fa-edit text-info" style="font-size: 20px;"></i>
                                                         </a>
                                                     </td>
-                                                @endcan
-                                                @can('make_transfer')
+                                                @endcanany
+                                                @canany(['agent_wallet_deposit','agent_wallet_withdraw'])
                                                     <td>
+                                                        @can('agent_wallet_deposit')
                                                         <a href="{{ route('admin.agent.getCashIn', $user->id) }}"
                                                             data-bs-toggle="tooltip"
                                                             data-bs-original-title="Deposit To Agent"
                                                             class="btn btn-info btn-sm">
                                                             <i class="fas fa-plus text-white mr-1"></i>Deposit
                                                         </a>
+                                                        @endcan
+                                                        @can('agent_wallet_withdraw')
                                                         <a href="{{ route('admin.agent.getCashOut', $user->id) }}"
                                                             data-bs-toggle="tooltip"
                                                             data-bs-original-title="WithDraw To Agent"
@@ -117,6 +123,7 @@
                                                             <i class="fas fa-minus text-white mr-1"></i>
                                                             Withdrawl
                                                         </a>
+                                                        @endcan
                                                         <a href="{{ route('admin.logs', $user->id) }}"
                                                             data-bs-toggle="tooltip" data-bs-original-title="Agent logs"
                                                             class="btn btn-info btn-sm">
@@ -144,13 +151,13 @@
                                         </a> --}}
 
                                                     </td>
-                                                @endcan
+                                                @endcanany
                                                 </tr>
                                             @endforeach
                                         @else
                                             <tr>
-                                                <td colspan="8" class="text-center text-muted py-4">
-                                                    There are no agents available.
+                                                <td col-span=8>
+                                                    There was no Agents.
                                                 </td>
                                             </tr>
                                         @endif
@@ -158,14 +165,8 @@
                                 </tbody>
 
                             </table>
-
-                        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 mt-3">
-                            <small class="text-muted">
-                                Showing {{ $users->firstItem() ?? 0 }} to {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} results
-                            </small>
-                            <nav aria-label="Agent pagination">
-                                {{ $users->onEachSide(1)->links('pagination::simple-bootstrap-5') }}
-                            </nav>
+                        <div class="d-flex justify-content-center">
+                            {{$users->links()}}
                         </div>
                         </div>
                         <!-- /.card-body -->
