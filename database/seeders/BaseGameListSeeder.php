@@ -130,7 +130,8 @@ abstract class BaseGameListSeeder extends Seeder
             ->first();
 
         if (! $product) {
-            $this->command?->warn("Product not found for code {$productCode} (source: {$options['source'] ?? 'unknown'})");
+            $source = $options['source'] ?? 'unknown';
+            $this->command?->warn("Product not found for code {$productCode} (source: {$source})");
 
             return;
         }
