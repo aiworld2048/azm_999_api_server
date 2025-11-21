@@ -6,11 +6,41 @@
             "game_code": "1",
             "game_name": "568 Sports Book",
             "game_type": "SPORT_BOOK",
-            "image_url": "https://images.gscplusmd.com/statics/production/images/games/1012/SPORT_BOOK/1.png",
-            "product_id": 1189,
+            "image_url": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+            "product_id": 52,
             "product_code": 1012,
-            "support_currency": "MMK",
-            "status": "ACTIVATED"
+            "support_currency": "ALL",
+            "status": "ACTIVATED",
+            "allow_free_round": false,
+            "lang_name": {
+                "0": "568 Sports Book",
+                "1": "568 Sports Book",
+                "12": "568 Sports Book",
+                "2": "568 Sports Book",
+                "3": "568 Sports Book",
+                "33": "568 Sports Book",
+                "39": "568 Sports Book",
+                "4": "568 Sports Book",
+                "5": "568 Sports Book",
+                "6": "568 Sports Book",
+                "7": "568 Sports Book",
+                "9": "568 Sports Book"
+            },
+            "lang_icon": {
+                "0": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+                "1": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+                "12": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+                "2": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+                "3": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+                "33": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+                "39": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+                "4": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+                "5": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+                "6": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+                "7": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png",
+                "9": "https://images.gscplusmd.com/statics/staging/publics/images/games/1/1012/SPORT_BOOK/1.png"
+            },
+            "created_at": 1720617274000
         }
     ],
     "pagination": {

@@ -29,7 +29,7 @@ class HACKSAWOtherGameSeeder extends Seeder
                         'image_url' => $game['image_url'],
                         'provider_product_id' => $game['product_id'],
                         'game_type_id' => 13,
-                        'product_id' => 65,
+                        'product_id' => 52,
                         'product_code' => $game['product_code'],
                         'support_currency' => $game['support_currency'],
                         'status' => $game['status'],

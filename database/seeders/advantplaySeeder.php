@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -33,7 +31,7 @@ class advantplaySeeder extends Seeder
                         'product_code' => $game['product_code'],
                         'support_currency' => $game['support_currency'],
                         'status' => $game['status'],
-                        'provider' => 'AWC-FASTSPIN',
+                        'provider' => 'Advantplay',
                         'game_list_status' => 1,
                         'created_at' => $now,
                         'updated_at' => $now,
