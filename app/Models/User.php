@@ -32,7 +32,6 @@ class User extends Authenticatable
 
     private const PLAYER_ROLE = 3;
 
-    
 
     /**
      * The attributes that are mass assignable.
@@ -42,31 +41,29 @@ class User extends Authenticatable
     protected $fillable = [
         'user_name',
         'name',
-        'profile',
+        'phone',
         'email',
+        'email_verified_at',
         'password',
         'game_provider_password',
         'profile',
         'balance',
+        'max_score',
+        'status',
+        'is_changed_password',
+        'agent_id',
         'payment_type_id',
+        'agent_logo',
         'account_name',
         'account_number',
         'line_id',
         'commission',
-        'phone',
-        'max_score',
-        'agent_id',
-        'status',
-        'type',
-        'is_changed_password',
         'referral_code',
-        'agent_logo',
         'site_name',
         'site_link',
-        'limit',
-        'limit3',
-        'cor',
-        'cor3',
+        'type',
+        'client_agent_name',
+        'client_agent_id',
     ];
     /**
      * The attributes that should be hidden for serialization.
