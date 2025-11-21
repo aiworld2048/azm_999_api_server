@@ -15,7 +15,7 @@ class HACKSAWOtherGameSeeder extends Seeder
      */
     public function run()
     {
-        $jsonPath = base_path('app/Console/Commands/json_data/hack_saw.json');
+        $jsonPath = base_path('app/Console/Commands/hacksaw_other.json');
         $data = json_decode(File::get($jsonPath), true);
         $now = Carbon::now();
 
