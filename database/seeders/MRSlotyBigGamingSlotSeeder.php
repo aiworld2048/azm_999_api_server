@@ -14,7 +14,7 @@ class MRSlotyBigGamingSlotSeeder extends Seeder
      */
     public function run()
     {
-        $jsonPath = base_path('app/Console/Commands/json_data/mr_biggamin_slot.json');
+        $jsonPath = base_path('app/Console/Commands/data/mr_biggamin_slot.json');
         $data = json_decode(File::get($jsonPath), true);
         $now = Carbon::now();
 
