@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
             PragmaticPlayLiveCasinoPremiumGameSeeder::class,
             PragmaticPlayVirtualSportGameSeeder::class,
             PragmaticPlayLiveCasinoGameSeeder::class,
-            SEOGameListSeeder::class,
+            SBOSportBookSeeder::class,
             YEEBETGameListSeeder::class,
 
 
