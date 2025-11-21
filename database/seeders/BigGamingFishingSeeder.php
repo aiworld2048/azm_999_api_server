@@ -15,7 +15,7 @@ class BigGamingFishingSeeder extends Seeder
      */
     public function run()
     {
-        $jsonPath = base_path('app/Console/Commands/json_data/big_gaming_fishin.json');
+        $jsonPath = base_path('app/Console/Commands/data/big_gaming_fishin.json');
         $data = json_decode(File::get($jsonPath), true);
         $now = Carbon::now();
 
