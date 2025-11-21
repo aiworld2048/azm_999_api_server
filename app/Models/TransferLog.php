@@ -10,8 +10,6 @@ class TransferLog extends Model
     protected $fillable = [
         'from_user_id',
         'to_user_id',
-        'sub_agent_id',
-        'sub_agent_name',
         'amount',
         'type',
         'description',
@@ -31,10 +29,5 @@ class TransferLog extends Model
     public function toUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'to_user_id');
-    }
-
-    public function subAgent()
-    {
-        return $this->belongsTo(User::class, 'sub_agent_id');
     }
 }

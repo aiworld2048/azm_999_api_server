@@ -130,7 +130,7 @@
                                     @else
                                         <i class="fas fa-user-clock mr-1 text-warning"></i>
                                     @endif
-                                    {{ $deposit->sub_agent_name ?? '-' }}
+                                    {{ optional($deposit->agent)->user_name ?? '-' }}
                                 </div>
                             </div>
                             <div class="info-row row">

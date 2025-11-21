@@ -17,8 +17,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DepositRequestController extends Controller
 {
-    protected const SUB_AGENT_ROLE = 'SubAgent';
-
     public function index(Request $request)
     {
         // Check permissions
@@ -27,8 +25,7 @@ class DepositRequestController extends Controller
         }
 
         $user = Auth::user();
-        $isSubAgent = $user->hasRole(self::SUB_AGENT_ROLE);
-        $agent = $isSubAgent ? $user->agent : $user;
+        $agent = $user;
 
         $startDate = $request->start_date ?? Carbon::today()->startOfDay()->toDateString();
         $endDate = $request->end_date ?? Carbon::today()->endOfDay()->toDateString();
@@ -44,7 +41,7 @@ class DepositRequestController extends Controller
 
         $totalDeposits = $deposits->sum('amount');
 
-        return view('admin.deposit_request.index', compact('deposits', 'totalDeposits', 'isSubAgent'));
+        return view('admin.deposit_request.index', compact('deposits', 'totalDeposits'));
     }
 
     public function statusChangeIndex(Request $request, DepositRequest $deposit)
@@ -56,8 +53,7 @@ class DepositRequestController extends Controller
 
         try {
             $user = Auth::user();
-            $isSubAgent = $user->hasRole(self::SUB_AGENT_ROLE);
-            $agent = $isSubAgent ? $user->agent : $user;
+            $agent = $user;
 
             // Check if user has permission to handle this deposit
             if ($deposit->agent_id !== $agent->id) {
@@ -75,8 +71,6 @@ class DepositRequestController extends Controller
             $deposit->update([
                 'status' => $request->status,
                 'note' => $note,
-                //'sub_agent_id' => $user->id,
-                'sub_agent_name' => $user->user_name,
             ]);
 
             if ($request->status == 1) {
@@ -90,8 +84,6 @@ class DepositRequestController extends Controller
                 \App\Models\TransferLog::create([
                     'from_user_id' => $agent->id,
                     'to_user_id' => $player->id,
-                    'sub_agent_id' => $isSubAgent ? $user->id : null,
-                    'sub_agent_name' => $isSubAgent ? $user->user_name : null,
                     'amount' => $request->amount,
                     'type' => 'top_up',
                     'description' => 'Deposit request '.$deposit->id.' approved by '.$user->user_name,
@@ -100,6 +92,7 @@ class DepositRequestController extends Controller
                         'player_old_balance' => $old_balance,
                         'player_new_balance' => $old_balance + $request->amount,
                         'refrence_no' => $deposit->refrence_no,
+                        'handled_by' => $user->user_name,
                     ],
                 ]);
             }
@@ -123,8 +116,7 @@ class DepositRequestController extends Controller
 
         try {
             $user = Auth::user();
-            $isSubAgent = $user->hasRole(self::SUB_AGENT_ROLE);
-            $agent = $isSubAgent ? $user->agent : $user;
+            $agent = $user;
 
             // Check if user has permission to handle this deposit
             if ($deposit->agent_id !== $agent->id) {
@@ -136,15 +128,11 @@ class DepositRequestController extends Controller
             $deposit->update([
                 'status' => $request->status,
                 'note' => $note,
-                //'sub_agent_id' => $user->id : null,
-                'sub_agent_name' => $user->user_name,
             ]);
 
             \App\Models\TransferLog::create([
                 'from_user_id' => $agent->id,
                 'to_user_id' => $deposit->user_id,
-                'sub_agent_id' => $isSubAgent ? $user->id : null,
-                'sub_agent_name' => $isSubAgent ? $user->user_name : null,
                 'amount' => $deposit->amount,
                 'type' => 'deposit-reject',
                 'description' => 'Deposit request '.$deposit->id.' rejected by '.$user->user_name,
@@ -152,6 +140,7 @@ class DepositRequestController extends Controller
                     'deposit_request_id' => $deposit->id,
                     'status' => 'rejected',
                     'refrence_no' => $deposit->refrence_no,
+                    'handled_by' => $user->user_name,
                 ],
             ]);
 
@@ -169,15 +158,14 @@ class DepositRequestController extends Controller
         }
 
         $user = Auth::user();
-        $isSubAgent = $user->hasRole(self::SUB_AGENT_ROLE);
-        $agent = $isSubAgent ? $user->agent : $user;
+        $agent = $user;
 
         // Check if user has permission to handle this deposit
         if ($deposit->agent_id !== $agent->id) {
             return redirect()->back()->with('error', 'You do not have permission to handle this deposit request!');
         }
 
-        return view('admin.deposit_request.view', compact('deposit', 'isSubAgent'));
+        return view('admin.deposit_request.view', compact('deposit'));
     }
 
     // log deposit request
@@ -189,8 +177,7 @@ class DepositRequestController extends Controller
         }
 
         $user = Auth::user();
-        $isSubAgent = $user->hasRole(self::SUB_AGENT_ROLE);
-        $agent = $isSubAgent ? $user->agent : $user;
+        $agent = $user;
 
         // Check if user has permission to handle this deposit
         if ($deposit->agent_id !== $agent->id) {
@@ -198,17 +185,5 @@ class DepositRequestController extends Controller
         }
 
         return view('admin.deposit_request.log', compact('deposit'));
-    }
-
-    private function isExistingAgent($userId)
-    {
-        $user = User::find($userId);
-
-        return $user && $user->hasRole(self::SUB_AGENT_ROLE) ? $user->parent : null;
-    }
-
-    private function getAgent()
-    {
-        return $this->isExistingAgent(Auth::id());
     }
 }

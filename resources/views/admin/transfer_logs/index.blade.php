@@ -111,9 +111,7 @@
                                     <th>Type</th>
                                     <th>Date</th>
                                     <th>Description</th>
-                                    @canany(['subagent_access', 'agent_access'])
-                                    <th>ApprovedBy</th>
-                                    @endcanany
+                                    <th>Handled By</th>
                                     <!-- <th>Action</th> -->
                                 </tr>
                             </thead>
@@ -152,9 +150,7 @@
                                     </td>
                                     <td>{{ $log->created_at->format('Y-m-d H:i:s') }}</td>
                                     <td>{{ $log->description }}</td>
-                                    @canany(['subagent_access', 'agent_access'])
-                                    <td>{{ $log->sub_agent_name ?? 'N/A' }}</td>
-                                    @endcanany
+                                    <td>{{ $log->meta['handled_by'] ?? '-' }}</td>
                                     <!-- <td>
                                         <a href="{{ route('admin.PlayertransferLogDetail', $log->id) }}" class="btn btn-primary">View</a>
                                     </td> -->
