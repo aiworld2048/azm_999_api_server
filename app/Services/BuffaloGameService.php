@@ -68,7 +68,7 @@ class BuffaloGameService
             $userName = self::extractUserNameFromUid($uid);
             
             if (!$userName) {
-                Log::warning('TriBet Buffalo - Could not extract username from UID', [
+                Log::warning('AZM999 Buffalo - Could not extract username from UID', [
                     'uid' => $uid
                 ]);
                 return false;
@@ -78,7 +78,7 @@ class BuffaloGameService
             $user = User::where('user_name', $userName)->first();
             
             if (!$user) {
-                Log::warning('TriBet Buffalo - User not found for token verification', [
+                Log::warning('AZM999 Buffalo - User not found for token verification', [
                     'userName' => $userName
                 ]);
                 return false;
@@ -90,11 +90,11 @@ class BuffaloGameService
             $isValid = hash_equals($expectedToken, $token);
 
             if ($isValid) {
-                Log::info('TriBet Buffalo - Token verified successfully', [
+                Log::info('AZM999 Buffalo - Token verified successfully', [
                     'user' => $userName
                 ]);
             } else {
-                Log::warning('TriBet Buffalo - Token verification failed', [
+                Log::warning('AZM999 Buffalo - Token verification failed', [
                     'user' => $userName,
                     'expected' => substr($expectedToken, 0, 10) . '...',
                     'received' => substr($token, 0, 10) . '...'
@@ -104,7 +104,7 @@ class BuffaloGameService
             return $isValid;
 
         } catch (\Exception $e) {
-            Log::error('TriBet Buffalo - Token verification error', [
+            Log::error('AZM999 Buffalo - Token verification error', [
                 'error' => $e->getMessage(),
                 'uid' => $uid
             ]);
@@ -146,7 +146,7 @@ class BuffaloGameService
                 }
             }
         } catch (\Exception $e) {
-            Log::warning('TriBet Buffalo - Failed to decode UID', [
+            Log::warning('AZM999 Buffalo - Failed to decode UID', [
                 'uid' => $uid,
                 'error' => $e->getMessage()
             ]);
@@ -162,7 +162,7 @@ class BuffaloGameService
                 }
             }
         } catch (\Exception $e) {
-            Log::error('TriBet Buffalo - Error in fallback UID search', [
+            Log::error('AZM999 Buffalo - Error in fallback UID search', [
                 'uid' => $uid,
                 'error' => $e->getMessage()
             ]);
@@ -195,17 +195,7 @@ class BuffaloGameService
      * Generate Buffalo authentication data
      * Returns UID and Token for frontend
      */
-    // public static function generateBuffaloAuth(User $user): array
-    // {
-    //     $uid = self::generateUid($user->user_name);
-    //     $token = self::generatePersistentToken($user->user_name);
-
-    //     return [
-    //         'uid' => $uid,
-    //         'token' => $token,
-    //         'user_name' => $user->user_name,
-    //     ];
-    // }
+    
 
     public static function generateBuffaloAuth(User $user): array
     {
