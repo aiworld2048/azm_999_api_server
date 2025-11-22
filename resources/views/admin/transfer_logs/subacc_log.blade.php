@@ -103,7 +103,7 @@
                                             <th>Type</th>
                                             <th>Description</th>
                                             <th>Date</th>
-                                            <th>ApprovedBy</th>
+                                            <th>Handled By</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -142,7 +142,7 @@
                                                 </td>
                                                 <td>{{ $log->description }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($log->created_at)->timezone('Asia/Yangon')->format('d-m-Y H:i:s') }}</td>
-                                                <td>{{ $log->sub_agent_name ?? '-' }}</td>
+                                                <td>{{ $log->meta['handled_by'] ?? '-' }}</td>
                                             </tr>
                                         @empty
                                             <tr>
