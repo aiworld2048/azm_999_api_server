@@ -71,7 +71,7 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $agent = User::where('referral_code', 'ponewine22x')->first();
+        $agent = User::where('referral_code', $request->referral_code)->first();
 
         if (! $agent) {
             return $this->error('', 'Not Found Agent', 401);
@@ -84,9 +84,6 @@ class AuthController extends Controller
             'name' => 'Register User',
             'user_name' => $this->generateRandomString(),
             'password' => Hash::make($inputs['password']),
-            'payment_type_id' => $request->payment_type_id,
-            'account_name' => $request->account_name,
-            'account_number' => $request->account_number,
             'agent_id' => $agent->id,
             'type' => UserType::Player,
         ]);
